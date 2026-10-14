@@ -5,7 +5,7 @@ import { SectionHeader } from '../ui/SectionHeader'
 
 const facts = [
   { label: 'Role', value: profile.role },
-  { label: 'Focus', value: 'Scalable web applications' },
+  { label: 'Focus', value: 'Scalable systems & AI engineering' },
   { label: 'Location', value: profile.location },
 ]
 
@@ -64,6 +64,11 @@ export function About({ index = '01', eyebrow = 'About', title = 'Engineering fo
                 </Reveal>
               ))}
             </ol>
+            {about.motto && (
+              <Reveal delay={0.1}>
+                <p className="mt-8 font-serif text-2xl text-zinc-200 italic">{about.motto}</p>
+              </Reveal>
+            )}
           </div>
         </div>
       </Container>
