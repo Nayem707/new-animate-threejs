@@ -1,4 +1,4 @@
-import { Database, MonitorSmartphone, Server, Workflow } from 'lucide-react'
+import { BrainCircuit, Cloud, Database, MonitorSmartphone, Server, Workflow } from 'lucide-react'
 import { skillGroups } from '../../data/skills'
 import { Container } from '../ui/Container'
 import { Reveal } from '../ui/Reveal'
@@ -8,7 +8,9 @@ const ICONS = {
   frontend: MonitorSmartphone,
   backend: Server,
   databases: Database,
+  ai: BrainCircuit,
   engineering: Workflow,
+  tools: Cloud,
 }
 
 function SkillGroup({ group, index }) {
