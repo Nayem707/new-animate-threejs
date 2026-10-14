@@ -1,4 +1,5 @@
 import { SkipLink } from '../components/layout/SkipLink'
+import { ScrollGallery } from '../components/showcase/ScrollGallery'
 import { ShowcaseIntro } from '../components/showcase/ShowcaseIntro'
 import { ShowcaseNav } from '../components/showcase/ShowcaseNav'
 import { VideoHero } from '../components/showcase/VideoHero'
@@ -14,6 +15,7 @@ export default function ShowcasePage() {
       <ShowcaseNav />
       <main id="main" tabIndex={-1} className="relative outline-none">
         <VideoHero />
+        <ScrollGallery />
         <ShowcaseIntro />
       </main>
     </>

@@ -116,6 +116,9 @@
    * Video hero frame geometry, interpolated by --hero-progress (0 = inset, 1 = near full-bleed).
    * GSAP scrubs only the progress value, so both ends stay responsive without re-measuring.
    * No transitions here: the scrubbed values must follow scroll exactly.
+   * Only the clip-path may change; the box must keep filling the hero. Animated insets relayout the
+   * video, overlays and centered text every frame, each snapping to the pixel grid on its own,
+   * which shows as shaking.
    */
   .video-hero-frame {
     --hero-progress: 0;
@@ -125,13 +128,42 @@
     --hero-end-inset: 12px;
     --hero-end-radius: 20px;
 
-    top: calc(var(--hero-start-top) + (var(--hero-end-inset) - var(--hero-start-top)) * var(--hero-progress));
-    right: calc(var(--hero-gutter) + (var(--hero-end-inset) - var(--hero-gutter)) * var(--hero-progress));
-    bottom: calc(var(--hero-start-bottom) + (var(--hero-end-inset) - var(--hero-start-bottom)) * var(--hero-progress));
-    left: calc(var(--hero-gutter) + (var(--hero-end-inset) - var(--hero-gutter)) * var(--hero-progress));
-    border-radius: calc(
-      var(--hero-start-radius) + (var(--hero-end-radius) - var(--hero-start-radius)) * var(--hero-progress)
+    clip-path: inset(
+      calc(var(--hero-start-top) + (var(--hero-end-inset) - var(--hero-start-top)) * var(--hero-progress))
+        calc(var(--hero-gutter) + (var(--hero-end-inset) - var(--hero-gutter)) * var(--hero-progress))
+        calc(var(--hero-start-bottom) + (var(--hero-end-inset) - var(--hero-start-bottom)) * var(--hero-progress))
+        calc(var(--hero-gutter) + (var(--hero-end-inset) - var(--hero-gutter)) * var(--hero-progress))
+        round
+        calc(var(--hero-start-radius) + (var(--hero-end-radius) - var(--hero-start-radius)) * var(--hero-progress))
     );
+  }
+
+  /* Keeps the hero text centered in the visible window, whose top and bottom insets differ until full-bleed. */
+  .video-hero-content {
+    --hero-progress: 0;
+    translate: 0 calc((var(--hero-start-top) - var(--hero-start-bottom)) * (1 - var(--hero-progress)) / 2);
+  }
+
+  /*
+   * Scroll-driven horizontal gallery. The section is exactly as tall as the horizontal travel
+   * (first card centered → last card centered, 1:1 with vertical scroll) plus the sticky viewport
+   * and a short hold, so its height never depends on JS measurement and can't shift the page.
+   * --gallery-count is set inline from the item list.
+   */
+  .scroll-gallery {
+    --gallery-item-w: min(32rem, 72vw, 52svh);
+    --gallery-gap: clamp(1rem, 2.5vw, 2rem);
+    --gallery-hold: 25svh;
+
+    height: calc(
+      100svh + (var(--gallery-count) - 1) * (var(--gallery-item-w) + var(--gallery-gap)) + var(--gallery-hold)
+    );
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .scroll-gallery {
+      height: auto;
+    }
   }
 
   .bg-grid {

@@ -2,14 +2,15 @@ import { useRef } from 'react'
 import { heroContent, heroVideo } from '../../data/showcase'
 import { useMediaQuery, usePrefersReducedMotion } from '../../hooks/useMediaQuery'
 import { useVideoHeroAnimation } from '../../hooks/useVideoHeroAnimation'
-import { useVideoPlayback } from '../../hooks/useVideoPlayback'
+import { useVideoScrubber } from '../../hooks/useVideoScrubber'
 import { HeroMedia } from './HeroMedia'
-import { PlaybackToggle } from './PlaybackToggle'
 import { ScrollCue } from './ScrollCue'
 
 /**
- * Pinned, scroll-scrubbed video hero. Elements tagged with `data-hero` are animated by
+ * Pinned, scroll-driven hero. Elements tagged with `data-hero` are animated by
  * useVideoHeroAnimation; nothing here sets transition on those animated properties.
+ * The same timeline drives the video playhead, so footage and headline scale move together.
+ * With reduced motion there is no timeline: the poster (first frame) is shown and no video loads.
  */
 export function VideoHero() {
   const sectionRef = useRef(null)
@@ -17,17 +18,21 @@ export function VideoHero() {
   const reducedMotion = usePrefersReducedMotion()
   const portrait = useMediaQuery(heroVideo.portraitQuery)
   const source = portrait ? heroVideo.portrait : heroVideo.landscape
-  const { status, paused, toggle } = useVideoPlayback(videoRef, { autoplay: !reducedMotion, src: source.src })
+  const { status, setProgress } = useVideoScrubber(videoRef, {
+    enabled: !reducedMotion,
+    src: source.src,
+    fps: heroVideo.fps,
+  })
 
-  useVideoHeroAnimation(sectionRef)
+  useVideoHeroAnimation(sectionRef, { onProgress: setProgress })
 
   return (
     <section ref={sectionRef} aria-labelledby="hero-title" className="relative h-svh overflow-hidden">
       <div
         data-hero="frame"
-        className="video-hero-frame absolute isolate transform-gpu overflow-hidden bg-[linear-gradient(180deg,#3b3446_0%,#9a7452_58%,#15130f_100%)]"
+        className="video-hero-frame absolute inset-0 isolate transform-gpu overflow-hidden bg-[linear-gradient(180deg,#3b3446_0%,#9a7452_58%,#15130f_100%)]"
       >
-        <HeroMedia source={source} videoRef={videoRef} status={status} autoplay={!reducedMotion} />
+        <HeroMedia source={source} videoRef={videoRef} status={status} load={!reducedMotion} />
 
         <div
           data-hero="overlay"
@@ -40,7 +45,7 @@ export function VideoHero() {
         />
 
         <div className="absolute inset-0 grid place-items-center px-5 text-center">
-          <div className="flex flex-col items-center">
+          <div data-hero="content" className="video-hero-content flex flex-col items-center">
             <p
               data-hero="eyebrow"
               className="mb-5 font-mono text-[10px] leading-relaxed tracking-[0.3em] text-white/85 uppercase sm:mb-6 sm:text-[11px]"
@@ -76,11 +81,10 @@ export function VideoHero() {
         </div>
 
         {/* Short landscape screens have no room under the headline for the cue. */}
-        <ScrollCue data-hero="cue" className="absolute inset-x-0 bottom-5 md:bottom-7 [@media(max-height:30rem)]:hidden" />
-
-        {status !== 'error' && (
-          <PlaybackToggle paused={paused} onToggle={toggle} className="absolute right-4 bottom-4 md:right-6 md:bottom-6" />
-        )}
+        <ScrollCue
+          data-hero="cue"
+          className="absolute inset-x-0 bottom-[calc(var(--hero-start-bottom)+1.25rem)] md:bottom-[calc(var(--hero-start-bottom)+1.75rem)] [@media(max-height:30rem)]:hidden"
+        />
       </div>
     </section>
   )
