@@ -5,6 +5,7 @@ import { Menu, X } from 'lucide-react'
 import { navLinks, profile } from '../../data/profile'
 import { useScrolled } from '../../hooks/useScrolled'
 import { Container } from '../ui/Container'
+import { SocialLinks } from '../ui/SocialLinks'
 
 function Logo() {
   return (
@@ -58,8 +59,11 @@ export function Navbar() {
           solid ? 'glass border-white/[0.06]' : 'border-transparent'
         }`}
       >
-        <Container className="flex h-16 items-center justify-between">
-          <Logo />
+        {/* Equal outer columns keep the nav centered on the page regardless of logo and icon widths. */}
+        <Container className="grid h-16 grid-cols-[1fr_auto] items-center md:grid-cols-[1fr_auto_1fr]">
+          <div className="justify-self-start">
+            <Logo />
+          </div>
 
           <nav aria-label="Primary" className="hidden md:block">
             <ul className="flex items-center gap-0.5 rounded-full border border-white/[0.07] bg-white/[0.02] p-1">
@@ -92,10 +96,14 @@ export function Navbar() {
             </ul>
           </nav>
 
+          <div className="hidden justify-self-end md:block">
+            <SocialLinks className="-mr-2" />
+          </div>
+
           <button
             ref={toggleRef}
             type="button"
-            className="-mr-2 grid size-10 place-items-center rounded-full text-zinc-200 transition-colors hover:bg-white/5 md:hidden"
+            className="-mr-2 grid size-10 place-items-center justify-self-end rounded-full text-zinc-200 transition-colors hover:bg-white/5 md:hidden"
             aria-expanded={open}
             aria-controls="mobile-nav"
             aria-label={open ? 'Close menu' : 'Open menu'}
@@ -143,6 +151,9 @@ export function Navbar() {
                   </NavLink>
                 </motion.li>
               ))}
+            </Container>
+            <Container className="pt-8">
+              <SocialLinks className="-ml-2" />
             </Container>
           </motion.nav>
         )}

@@ -10,7 +10,7 @@ const links = [
   email && { label: 'Email', href: `mailto:${email}`, Icon: Mail, external: false },
 ].filter(Boolean)
 
-export function SocialLinks({ className = '' }) {
+export function SocialLinks({ className = '', linkClassName = '' }) {
   return (
     <ul className={`flex items-center gap-1 ${className}`}>
       {links.map(({ label, href, Icon, external }) => (
@@ -19,7 +19,7 @@ export function SocialLinks({ className = '' }) {
             href={href}
             {...(external && { target: '_blank', rel: 'noopener noreferrer' })}
             aria-label={external ? `${label} (opens in a new tab)` : label}
-            className="grid size-10 place-items-center rounded-full text-zinc-400 transition-colors duration-300 hover:bg-white/5 hover:text-white"
+            className={`grid size-10 place-items-center rounded-full text-zinc-400 transition-colors duration-300 hover:bg-white/5 hover:text-white ${linkClassName}`}
           >
             <Icon className="size-[18px]" aria-hidden="true" />
           </a>
