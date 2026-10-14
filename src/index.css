@@ -1,7 +1,8 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-sans:
+    "Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
   --font-serif: "Instrument Serif", ui-serif, Georgia, serif;
 
@@ -36,6 +37,12 @@
   60%,
   100% {
     transform: translateY(200%);
+  }
+}
+
+@keyframes ticker {
+  to {
+    transform: translate3d(-50%, 0, 0);
   }
 }
 
@@ -95,7 +102,12 @@
 
 @layer components {
   .text-gradient {
-    background-image: linear-gradient(110deg, #f5f3ff 10%, var(--color-accent-300) 45%, var(--color-accent-500) 90%);
+    background-image: linear-gradient(
+      110deg,
+      #f5f3ff 10%,
+      var(--color-accent-300) 45%,
+      var(--color-accent-500) 90%
+    );
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
@@ -109,7 +121,13 @@
   }
 
   .hairline {
-    background-image: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.1) 20%, rgb(255 255 255 / 0.1) 80%, transparent);
+    background-image: linear-gradient(
+      90deg,
+      transparent,
+      rgba(129, 7, 177, 0.596) 80%,
+      rgba(134, 42, 219, 0.452) 80%,
+      transparent
+    );
   }
 
   /*
@@ -129,19 +147,41 @@
     --hero-end-radius: 20px;
 
     clip-path: inset(
-      calc(var(--hero-start-top) + (var(--hero-end-inset) - var(--hero-start-top)) * var(--hero-progress))
-        calc(var(--hero-gutter) + (var(--hero-end-inset) - var(--hero-gutter)) * var(--hero-progress))
-        calc(var(--hero-start-bottom) + (var(--hero-end-inset) - var(--hero-start-bottom)) * var(--hero-progress))
-        calc(var(--hero-gutter) + (var(--hero-end-inset) - var(--hero-gutter)) * var(--hero-progress))
+      calc(
+          var(--hero-start-top) +
+            (var(--hero-end-inset) - var(--hero-start-top)) *
+            var(--hero-progress)
+        )
+        calc(
+          var(--hero-gutter) + (var(--hero-end-inset) - var(--hero-gutter)) *
+            var(--hero-progress)
+        )
+        calc(
+          var(--hero-start-bottom) +
+            (var(--hero-end-inset) - var(--hero-start-bottom)) *
+            var(--hero-progress)
+        )
+        calc(
+          var(--hero-gutter) + (var(--hero-end-inset) - var(--hero-gutter)) *
+            var(--hero-progress)
+        )
         round
-        calc(var(--hero-start-radius) + (var(--hero-end-radius) - var(--hero-start-radius)) * var(--hero-progress))
+        calc(
+          var(--hero-start-radius) +
+            (var(--hero-end-radius) - var(--hero-start-radius)) *
+            var(--hero-progress)
+        )
     );
   }
 
   /* Keeps the hero text centered in the visible window, whose top and bottom insets differ until full-bleed. */
   .video-hero-content {
     --hero-progress: 0;
-    translate: 0 calc((var(--hero-start-top) - var(--hero-start-bottom)) * (1 - var(--hero-progress)) / 2);
+    translate: 0
+      calc(
+        (var(--hero-start-top) - var(--hero-start-bottom)) *
+          (1 - var(--hero-progress)) / 2
+      );
   }
 
   /*
@@ -156,7 +196,8 @@
     --gallery-hold: 25svh;
 
     height: calc(
-      100svh + (var(--gallery-count) - 1) * (var(--gallery-item-w) + var(--gallery-gap)) + var(--gallery-hold)
+      100svh + (var(--gallery-count) - 1) *
+        (var(--gallery-item-w) + var(--gallery-gap)) + var(--gallery-hold)
     );
   }
 
@@ -166,11 +207,38 @@
     }
   }
 
+  /*
+   * Logo ticker track: two identical copies side by side, so shifting by exactly -50% lands on a
+   * frame identical to the start. Each copy ends with padding equal to the tile gap (not a flex gap
+   * between copies), keeping the seam spacing the same as everywhere else.
+   */
+  .ticker-track {
+    animation: ticker var(--ticker-duration, 40s) linear infinite;
+  }
+
+  .ticker-track[data-direction="reverse"] {
+    animation-direction: reverse;
+  }
+
+  .ticker-row:hover .ticker-track {
+    animation-play-state: paused;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ticker-track {
+      animation: none;
+    }
+  }
+
   .bg-grid {
     background-image:
       linear-gradient(rgb(255 255 255 / 0.035) 1px, transparent 1px),
       linear-gradient(90deg, rgb(255 255 255 / 0.035) 1px, transparent 1px);
     background-size: 64px 64px;
-    mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, #000 30%, transparent 75%);
+    mask-image: radial-gradient(
+      ellipse 70% 60% at 50% 40%,
+      #000 30%,
+      transparent 75%
+    );
   }
 }
