@@ -3,3 +3,6 @@ dist
 dist-ssr
 *.local
 .DS_Store
+
+# 4K master footage; web encodes live in public/video
+media/

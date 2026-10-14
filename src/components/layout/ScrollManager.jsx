@@ -10,6 +10,42 @@ function scrollToHash(hash, behavior) {
   return true
 }
 
+const INTENT_EVENTS = ['wheel', 'touchstart', 'keydown', 'pointerdown']
+
+/**
+ * First load with a #hash: lazy routes render after the first commit, and late layout work (web
+ * fonts, ScrollTrigger measuring the page by scrolling it) can move the target. Keep the target
+ * aligned until fonts are ready and things settle, and stop as soon as the visitor takes over.
+ */
+function scrollToInitialHash(hash) {
+  const id = decodeURIComponent(hash.slice(1))
+  const startedAt = performance.now()
+  let fontsReady = !document.fonts
+  let userTookOver = false
+  document.fonts?.ready.then(() => {
+    fontsReady = true
+  })
+  const takeOver = () => {
+    userTookOver = true
+  }
+  INTENT_EVENTS.forEach((type) => window.addEventListener(type, takeOver, { passive: true }))
+
+  const tick = () => {
+    const elapsed = performance.now() - startedAt
+    const target = document.getElementById(id)
+    if (target && !userTookOver) {
+      const offset = parseFloat(getComputedStyle(target).scrollMarginTop) || 0
+      if (Math.abs(target.getBoundingClientRect().top - offset) > 2) {
+        target.scrollIntoView({ behavior: 'instant', block: 'start' })
+      }
+    }
+    const settled = fontsReady && elapsed > 1000
+    if (!userTookOver && !settled && elapsed < 4000) requestAnimationFrame(tick)
+    else INTENT_EVENTS.forEach((type) => window.removeEventListener(type, takeOver))
+  }
+  tick()
+}
+
 /**
  * Scroll handling for declarative <BrowserRouter> (which has no built-in ScrollRestoration):
  * - new page: jump to top, or to the #section in the URL
@@ -47,13 +83,7 @@ export function ScrollManager() {
     previous.current = location
 
     if (!prev) {
-      if (location.hash && scrollToHash(location.hash, 'instant')) {
-        // Web fonts can shift layout after first paint; re-align unless the visitor has scrolled since.
-        const settledAt = window.scrollY
-        document.fonts?.ready.then(() => {
-          if (Math.abs(window.scrollY - settledAt) < 2) scrollToHash(location.hash, 'instant')
-        })
-      }
+      if (location.hash) scrollToInitialHash(location.hash)
       return
     }
 

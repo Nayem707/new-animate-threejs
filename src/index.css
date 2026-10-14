@@ -22,6 +22,13 @@
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+/* Non-inheriting, so scrubbing it doesn't restyle the frame's descendants every frame. */
+@property --hero-progress {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 0;
+}
+
 @keyframes scroll-cue {
   0% {
     transform: translateY(-100%);
@@ -33,6 +40,10 @@
 }
 
 @layer base {
+  :root {
+    --hero-gutter: clamp(1rem, 4vw, 4.5rem);
+  }
+
   html {
     background-color: var(--color-ink-950);
     color-scheme: dark;
@@ -67,6 +78,11 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
+    /* !important beats the inline `scroll-behavior: smooth` ScrollTrigger restores on <html> after each refresh. */
+    html {
+      scroll-behavior: auto !important;
+    }
+
     *,
     *::before,
     *::after {
@@ -94,6 +110,28 @@
 
   .hairline {
     background-image: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.1) 20%, rgb(255 255 255 / 0.1) 80%, transparent);
+  }
+
+  /*
+   * Video hero frame geometry, interpolated by --hero-progress (0 = inset, 1 = near full-bleed).
+   * GSAP scrubs only the progress value, so both ends stay responsive without re-measuring.
+   * No transitions here: the scrubbed values must follow scroll exactly.
+   */
+  .video-hero-frame {
+    --hero-progress: 0;
+    --hero-start-top: clamp(4.5rem, 11svh, 7.5rem);
+    --hero-start-bottom: clamp(1rem, 6svh, 4rem);
+    --hero-start-radius: clamp(1.25rem, 2.4vw, 2.25rem);
+    --hero-end-inset: 12px;
+    --hero-end-radius: 20px;
+
+    top: calc(var(--hero-start-top) + (var(--hero-end-inset) - var(--hero-start-top)) * var(--hero-progress));
+    right: calc(var(--hero-gutter) + (var(--hero-end-inset) - var(--hero-gutter)) * var(--hero-progress));
+    bottom: calc(var(--hero-start-bottom) + (var(--hero-end-inset) - var(--hero-start-bottom)) * var(--hero-progress));
+    left: calc(var(--hero-gutter) + (var(--hero-end-inset) - var(--hero-gutter)) * var(--hero-progress));
+    border-radius: calc(
+      var(--hero-start-radius) + (var(--hero-end-radius) - var(--hero-start-radius)) * var(--hero-progress)
+    );
   }
 
   .bg-grid {

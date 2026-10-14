@@ -2,7 +2,6 @@ import { Outlet, useLocation } from 'react-router-dom'
 import { motion } from 'motion/react'
 import { Footer } from './Footer'
 import { Navbar } from './Navbar'
-import { ScrollManager } from './ScrollManager'
 import { SkipLink } from './SkipLink'
 
 export function Layout() {
@@ -10,7 +9,6 @@ export function Layout() {
 
   return (
     <>
-      <ScrollManager />
       <SkipLink />
       <Navbar />
       <main id="main" tabIndex={-1} className="relative outline-none">
