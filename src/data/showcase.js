@@ -1,3 +1,4 @@
+import { SHOWCASE_ONLY } from "../config";
 import { about } from "./profile";
 
 // Content and tuning for the scroll-driven landing page at /showcase.
@@ -53,10 +54,24 @@ export const showcaseGallery = [
   { id: 5, color: "#fb7185", label: "Night Five", image: "/photos/tokyo-shinjuku-2/image-8.jpg" },
 ];
 
+// In showcase-only mode the portfolio routes don't exist, so only in-page anchors are kept.
+const isReachable = ({ to }) => !SHOWCASE_ONLY || to.startsWith("#");
+
 export const showcaseNav = [
   { to: "#intro", label: "Intro" },
   { to: "/about", label: "About" },
   { to: "/projects", label: "Projects" },
+].filter(isReachable);
+
+// Documents linked from the showcase footer's nav (files in public/ or external); they open in a
+// new tab. `kind` is the small tag shown next to the label.
+export const showcaseDocuments = [
+  { href: "/SEOMATIK_RELAUNCH_HOME.pdf", label: "SEOMATIK Brief", kind: "PDF" },
+  {
+    href: "https://docs.google.com/presentation/d/16xNDbUB7b9Q9wo89FQN_ZiG9q1VmKAYy2nf7KoBEb2c/edit",
+    label: "Project Structure",
+    kind: "Slides",
+  },
 ];
 
 export const showcaseIntro = {
@@ -67,5 +82,5 @@ export const showcaseIntro = {
   links: [
     { to: "/projects", label: "View projects", variant: "primary" },
     { to: "/about", label: "About me", variant: "secondary" },
-  ],
+  ].filter(isReachable),
 };
