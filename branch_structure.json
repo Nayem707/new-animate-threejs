@@ -1,0 +1,15 @@
+{
+  "default_branch": "main",
+  "branches": [
+    "Showcase",
+    "main"
+  ],
+  "parent": {
+    "Showcase": "main",
+    "main": null
+  },
+  "order": [
+    "main",
+    "Showcase"
+  ]
+}
