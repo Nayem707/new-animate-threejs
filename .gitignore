@@ -6,3 +6,4 @@ dist-ssr
 
 # 4K master footage; web encodes live in public/video
 media/
+config.bat
