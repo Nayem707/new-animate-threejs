@@ -1,5 +1,6 @@
 import { SkipLink } from '../components/layout/SkipLink'
 import { ScrollGallery } from '../components/showcase/ScrollGallery'
+import { ShowcaseFooter } from '../components/showcase/ShowcaseFooter'
 import { ShowcaseIntro } from '../components/showcase/ShowcaseIntro'
 import { ShowcaseNav } from '../components/showcase/ShowcaseNav'
 import { VideoHero } from '../components/showcase/VideoHero'
@@ -18,6 +19,7 @@ export default function ShowcasePage() {
         <ScrollGallery />
         <ShowcaseIntro />
       </main>
+      <ShowcaseFooter />
     </>
   )
 }

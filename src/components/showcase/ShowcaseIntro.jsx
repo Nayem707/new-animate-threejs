@@ -41,16 +41,18 @@ export function ShowcaseIntro() {
             </ul>
           </Reveal>
 
-          <Reveal delay={0.15} className="mt-12 flex flex-wrap gap-3">
-            {links.map(({ to, label, variant }) => (
-              <Button key={to} to={to} variant={variant}>
-                {label}
-                {variant === 'primary' && (
-                  <ArrowRight className="size-4 transition-transform duration-300 group-hover:translate-x-0.5" aria-hidden="true" />
-                )}
-              </Button>
-            ))}
-          </Reveal>
+          {links.length > 0 && (
+            <Reveal delay={0.15} className="mt-12 flex flex-wrap gap-3">
+              {links.map(({ to, label, variant }) => (
+                <Button key={to} to={to} variant={variant}>
+                  {label}
+                  {variant === 'primary' && (
+                    <ArrowRight className="size-4 transition-transform duration-300 group-hover:translate-x-0.5" aria-hidden="true" />
+                  )}
+                </Button>
+              ))}
+            </Reveal>
+          )}
         </div>
       </Container>
     </section>
